@@ -1,0 +1,27 @@
+# Ignorer les environnements virtuels
+venv/
+venvResume/
+.env
+
+# Ignorer les résultats et checkpoints
+results/
+*/checkpoint*/
+*.bin
+*.json
+*.pt
+*.h5
+*.pkl
+
+# Ignorer les fichiers temporaires
+__pycache__/
+*.pyc
+*.log
+*.tmp
+*.cache
+.DS_Store
+
+# Ignorer les notebooks de test volumineux
+*.ipynb_checkpoints/
+
+# Ignorer tout ce qui est généré automatiquement
+*.lock

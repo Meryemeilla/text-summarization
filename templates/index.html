@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résumé Automatique de Texte – IA Professionnelle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container py-5">
+        <!-- En-tête -->
+        <header class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-primary">Résumé Automatique de Texte</h1>
+            <p class="text-muted mt-2">Générez un résumé concis et pertinent en quelques secondes grâce à l’intelligence artificielle.</p>
+        </header>
+
+        <!-- Formulaire principal -->
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-body p-4 p-md-5">
+                <form method="POST" action="/" id="summaryForm">
+                    <!-- Zone de texte -->
+                    <div class="mb-4">
+                        <label for="text" class="form-label fw-semibold d-flex align-items-center">
+                            <i class="fas fa-file-alt me-2 text-primary"></i>Texte à résumer
+                        </label>
+                        <textarea 
+                            id="text" 
+                            name="text" 
+                            class="form-control" 
+                            rows="8" 
+                            placeholder="Collez ici l’article, le rapport, l’email ou tout autre texte que vous souhaitez résumer…"
+                            maxlength="5000"
+                        >{{ text_input or '' }}</textarea>
+                        <div class="form-text text-end text-muted" id="charCount">0 / 5000 caractères</div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="max_len" class="form-label fw-semibold d-flex align-items-center">
+                                <i class="fas fa-sliders-h me-2 text-primary"></i>Longueur maximale (mots)
+                            </label>
+                            <input 
+                                type="number" 
+                                id="max_len" 
+                                name="max_len" 
+                                value="{{ max_len or 150 }}" 
+                                min="20" 
+                                max="500" 
+                                class="form-control w-100"
+                            >
+                            <div class="form-text text-muted">Entre 20 et 500 mots</div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <div class="alert alert-info small w-100 mb-0 rounded-3">
+                                <i class="fas fa-lightbulb me-1"></i> Conseil : un résumé de 100–200 mots convient à la plupart des documents.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bouton -->
+                    <button type="submit" class="btn btn-lg w-100 btn-submit" id="submitBtn">
+                        <i class="fas fa-sparkles me-2"></i>Générer le résumé
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Résultat -->
+        {% if summary %}
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden mt-5 summary-box">
+            <div class="card-body p-4 p-md-5">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h2 class="h5 fw-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-robot me-2"></i>Résumé généré
+                    </h2>
+                    <button class="btn btn-outline-secondary btn-sm" id="copyBtn" title="Copier le résumé">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div class="summary-content">
+                    <p class="lead mb-0">{{ summary }}</p>
+                </div>
+                <div class="mt-3 d-flex align-items-center text-muted small">
+                    <i class="fas fa-check-circle text-success me-1"></i>
+                    Résumé optimisé pour la clarté et la concision
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-4 small">
+        <p class="mb-0">© {{ now.year }} – Outil de résumé IA • Traitement 100 % local ou cloud sécurisé • Aucune donnée n’est conservée</p>
+    </footer>
+
+    <!-- Script pour interaction -->
+    <script>
+        // Compteur de caractères
+        const textarea = document.getElementById('text');
+        const charCount = document.getElementById('charCount');
+        if (textarea) {
+            textarea.addEventListener('input', () => {
+                const len = textarea.value.length;
+                charCount.textContent = `${len} / 5000 caractères`;
+                charCount.className = len > 4900 ? 'form-text text-end text-danger' : 'form-text text-end text-muted';
+            });
+            // Déclencher au chargement
+            if (textarea.value) {
+                charCount.textContent = `${textarea.value.length} / 5000 caractères`;
+            }
+        }
+
+        // Copier le résumé
+        document.getElementById('copyBtn')?.addEventListener('click', () => {
+            const summaryText = document.querySelector('.summary-content').innerText;
+            navigator.clipboard.writeText(summaryText).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalIcon = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check text-success"></i>';
+                setTimeout(() => {
+                    btn.innerHTML = originalIcon;
+                }, 1500);
+            });
+        });
+
+        // Désactiver le bouton pendant le traitement (optionnel, si vous ajoutez un loader plus tard)
+        document.getElementById('summaryForm')?.addEventListener('submit', () => {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Génération en cours…';
+        });
+    </script>
+</body>
+</html>
