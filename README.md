@@ -37,7 +37,7 @@ You can enter any paragraph in English and get an instant summary.
 |-------|-------------|---------|
 | BART-base | Abstractive summarization model fine-tuned on CNN/DailyMail | 🤗 Transformers |
 | T5-small | Lightweight text-to-text model for summarization | 🤗 Transformers |
-| PEGASUS | Model designed for abstractive summarization tasks | 🤗 Transformers |
+
 
 ---
 
